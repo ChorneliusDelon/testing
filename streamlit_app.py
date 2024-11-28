@@ -7,7 +7,7 @@ def read_html(file_path):
         return file.read()
 
 # Tampilkan halaman utama
-st.title("Coffee Shop Sederhana")
+st.title("Coffee Shop ")
 
 # Render file HTML
 html_path = "index.html"

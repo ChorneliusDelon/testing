@@ -58,5 +58,4 @@ html_code = """
 """
 
 # Tampilkan animasi di Streamlit
-st.title("Animasi Hati yang Tumbuh")
 st.components.v1.html(html_code, height=600)

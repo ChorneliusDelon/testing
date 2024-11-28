@@ -1,57 +1,60 @@
 import streamlit as st
-import mysql.connector
 
-# Koneksi ke database
-def create_connection():
-    return mysql.connector.connect(
-        host="localhost",      # Ganti dengan host database Anda
-        user="root",           # Ganti dengan username MySQL Anda
-        password="password",   # Ganti dengan password MySQL Anda
-        database="coffee_shop" # Nama database
-    )
+# Data menu
+menu_items = {
+    "Kopi": {
+        "Espresso": 15000,
+        "Cappuccino": 20000,
+        "Latte": 25000,
+        "Mocha": 30000,
+    },
+    "Makanan": {
+        "Croissant": 25000,
+        "Brownies": 20000,
+        "Cheesecake": 35000,
+        "Donat": 15000,
+    },
+}
 
-# Ambil data menu dari database
-def get_menu():
-    connection = create_connection()
-    cursor = connection.cursor()
-    cursor.execute("SELECT id, name, price FROM menu")
-    result = cursor.fetchall()
-    connection.close()
-    return result
+# Fungsi untuk menghitung total harga
+def calculate_total(order_list):
+    total = sum(item["price"] * item["quantity"] for item in order_list)
+    return total
 
-# Simpan pesanan ke database
-def save_order(name, menu_id, quantity, total_price):
-    connection = create_connection()
-    cursor = connection.cursor()
-    cursor.execute(
-        "INSERT INTO orders (customer_name, menu_id, quantity, total_price) VALUES (%s, %s, %s, %s)",
-        (name, menu_id, quantity, total_price)
-    )
-    connection.commit()
-    connection.close()
-
-# Antarmuka Streamlit
+# Judul aplikasi
 st.title("Coffee Shop Sederhana")
 
-# Tampilkan menu dari database
-st.subheader("Pilih Menu Kopi")
-menu = get_menu()
-menu_names = [f"{item[1]} - Rp {item[2]:,}" for item in menu]
-selected_menu = st.selectbox("Menu Kopi", menu_names)
-selected_menu_id = menu[menu_names.index(selected_menu)][0]
-selected_menu_price = menu[menu_names.index(selected_menu)][2]
+# Pilih kategori menu
+category = st.selectbox("Pilih Kategori Menu", list(menu_items.keys()))
 
-quantity = st.number_input("Jumlah (gelas)", min_value=1, step=1)
+# Pilih item menu
+menu = menu_items[category]
+selected_item = st.selectbox("Pilih Menu", list(menu.keys()))
+price = menu[selected_item]
 
-# Input nama pelanggan
-customer_name = st.text_input("Nama Pelanggan")
+# Input jumlah
+quantity = st.number_input("Jumlah (gelas/porsi)", min_value=1, step=1)
 
-# Tampilkan total harga
-if customer_name:
-    total_price = quantity * selected_menu_price
-    st.write(f"Total harga: Rp {total_price:,}")
+# Tombol tambah ke pesanan
+if "order_list" not in st.session_state:
+    st.session_state["order_list"] = []
 
-    # Simpan pesanan ke database
-    if st.button("Pesan"):
-        save_order(customer_name, selected_menu_id, quantity, total_price)
-        st.success("Pesanan berhasil disimpan!")
+if st.button("Tambah ke Pesanan"):
+    st.session_state["order_list"].append({"item": selected_item, "price": price, "quantity": quantity})
+    st.success(f"{quantity} {selected_item} berhasil ditambahkan ke pesanan!")
+
+# Tampilkan pesanan
+st.subheader("Pesanan Anda")
+if st.session_state["order_list"]:
+    for order in st.session_state["order_list"]:
+        st.write(f"- {order['quantity']}x {order['item']} - Rp {order['price']:,}/item")
+    
+    total_price = calculate_total(st.session_state["order_list"])
+    st.write(f"**Total Harga: Rp {total_price:,}**")
+
+    # Simulasi pembayaran
+    if st.button("Bayar"):
+        st.session_state["order_list"] = []
+        st.success("Pesanan Anda berhasil! Terima kasih telah memesan.")
+else:
+    st.write("Belum ada pesanan.")

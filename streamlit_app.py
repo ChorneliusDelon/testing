@@ -1,6 +1,6 @@
 import streamlit as st
 
-# HTML dan CSS untuk animasi love
+# HTML dan CSS untuk animasi hati yang membesar
 html_code = """
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +22,7 @@ html_code = """
             height: 50px;
             background-color: red;
             transform: rotate(-45deg);
-            animation: grow 2s infinite;
+            animation: grow 3s ease-in-out infinite;
         }
         .heart::before,
         .heart::after {
@@ -41,12 +41,16 @@ html_code = """
             top: 0;
             left: -25px;
         }
+
         @keyframes grow {
-            0%, 100% {
-                transform: scale(1) rotate(-45deg);
+            0% {
+                transform: scale(0.1) rotate(-45deg); /* Mulai dari kecil */
             }
             50% {
-                transform: scale(1.5) rotate(-45deg);
+                transform: scale(1.2) rotate(-45deg); /* Ukuran normal */
+            }
+            100% {
+                transform: scale(1.5) rotate(-45deg); /* Ukuran lebih besar */
             }
         }
     </style>
@@ -58,4 +62,5 @@ html_code = """
 """
 
 # Tampilkan animasi di Streamlit
+st.title("Animasi Hati Tumbuh")
 st.components.v1.html(html_code, height=600)

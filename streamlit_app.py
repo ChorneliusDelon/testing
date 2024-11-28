@@ -1,26 +1,25 @@
 import streamlit as st
-import turtle
-import math
+import numpy as np
+import matplotlib.pyplot as plt
 
-t = turtle.Turtle()
-t.speed(0)
-t.color("red")
-t.hideturtle()
-turtle.bgcolor("black")
-
+# Fungsi untuk menggambar hati
 def corazon(n):
-    x = 16 * math.sin(n) ** 3
-    y = 13 * math.cos(n) - 5 * math.cos(2*n) - 2*math.cos(3*n) - math.cos(4*n)
+    x = 16 * np.sin(n) ** 3
+    y = 13 * np.cos(n) - 5 * np.cos(2*n) - 2 * np.cos(3*n) - np.cos(4*n)
     return x, y
 
-t.penup()
-for i in range(15):
-    t.goto(0, 0)
-    t.pendown()
-    for n in range(0, 100, 2):
-        x, y = corazon(n/10)
-        t.goto(x*i, y*i)
-    t.penup()
+# Membuat tampilan Streamlit
+st.title("Gambar Hati dengan Matplotlib")
 
-t.hideturtle()
-turtle.done()
+# Membuat plot hati
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.set_facecolor('black')
+ax.axis('off')  # Menyembunyikan axis agar fokus pada gambar hati
+
+for i in range(1, 15):
+    n = np.linspace(0, 2 * np.pi, 1000)  # Rentang untuk n
+    x, y = corazon(n)  # Hitung x dan y untuk setiap titik
+    ax.plot(x * i, y * i, color='red', linewidth=1)  # Gambar hati dengan skala yang berbeda
+
+# Menampilkan gambar menggunakan Streamlit
+st.pyplot(fig)

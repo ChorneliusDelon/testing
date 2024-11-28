@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Fungsi untuk menggambar hati
 def corazon(n):
@@ -8,14 +9,19 @@ def corazon(n):
     return x, y
 
 # Membuat tampilan Streamlit
-st.title("Gambar Hati dengan Streamlit dan NumPy")
+st.title("Gambar Hati dengan Matplotlib")
 
-# Membuat rentang untuk n
-n = np.linspace(0, 2 * np.pi, 1000)  # Rentang untuk n
-x, y = corazon(n)  # Hitung x dan y untuk setiap titik
+# Membuat plot hati
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.set_facecolor('black')
+ax.axis('off')  # Menyembunyikan axis agar fokus pada gambar hati
 
-# Menampilkan gambar hati langsung dengan Streamlit
-st.write("Berikut adalah gambar hati menggunakan Streamlit dan NumPy:")
+# Menentukan rentang n untuk menggambar hati
+n = np.linspace(0, 2 * np.pi, 1000)
+x, y = corazon(n)
 
-# Plot hati menggunakan Streamlit's st.line_chart
-st.line_chart(np.array([x, y]).T)  # Menampilkan data dalam format yang bisa dipahami oleh st.line_chart
+# Gambar hati
+ax.plot(x, y, color='red', linewidth=3)
+
+# Menampilkan gambar menggunakan Streamlit
+st.pyplot(fig)

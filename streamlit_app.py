@@ -10,14 +10,18 @@ def corazon(n):
     return x, y
 
 # Judul aplikasi
-st.title("Animasi Hati dengan Streamlit")
-st.write("Simulasi bentuk hati dengan animasi sederhana di Streamlit.")
+st.title("Animasi Hati dengan Musik di Streamlit")
+st.write("Simulasi bentuk hati dengan animasi dan musik yang dimainkan bersamaan.")
 
 # Tombol untuk memulai animasi
-start_animation = st.button("Mulai Animasi")
+start_animation = st.button("Mulai Animasi dan Musik")
 
-# Jika tombol ditekan, mulai proses animasi
+# Jika tombol ditekan, mulai proses animasi dan musik
 if start_animation:
+    # Menambahkan musik
+    audio_path = "ssstik.io_1731710601228.mp3"  # Ganti dengan path file musik yang ingin diputar
+    st.audio(audio_path, start_time=0)  # Memutar musik otomatis
+
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.set_aspect('equal')
     ax.set_facecolor("black")

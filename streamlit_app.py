@@ -18,4 +18,25 @@ start_animation = st.button("Mulai Animasi")
 
 # Jika tombol ditekan, mulai proses animasi
 if start_animation:
-    fig, ax = plt.subplots(figsize=(6, 
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax.set_aspect('equal')
+    ax.set_facecolor("black")
+    ax.axis("off")  # Sembunyikan grid dan sumbu
+
+    colors = ["red", "pink", "orange", "yellow", "purple"]  # Warna untuk lapisan
+
+    # Animasi berlapis
+    for i in range(1, 16):
+        t = np.linspace(0, 2 * np.pi, 100)  # Titik-titik koordinat
+        x, y = corazon(t)
+        ax.plot(x * i, y * i, color=colors[i % len(colors)], alpha=0.7)
+
+        # Tampilkan layer saat ini di Streamlit
+        st.pyplot(fig)
+        time.sleep(0.2)  # Jeda sejenak sebelum menambah lapisan
+
+        # Hapus layer sebelumnya jika diperlukan untuk membuat efek animasi (opsional)
+        if ax.lines:  # Pastikan ada elemen sebelum menghapus
+            ax.lines.pop(-1)
+
+    st.write("Animasi selesai!")

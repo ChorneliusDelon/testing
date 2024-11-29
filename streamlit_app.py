@@ -35,8 +35,4 @@ if start_animation:
         st.pyplot(fig)
         time.sleep(0.2)  # Jeda sejenak sebelum menambah lapisan
 
-        # Hapus layer sebelumnya jika diperlukan untuk membuat efek animasi (opsional)
-        if ax.lines:  # Pastikan ada elemen sebelum menghapus
-            ax.lines.pop(-1)
-
     st.write("Animasi selesai!")

@@ -49,7 +49,7 @@ def usia_page():
         st.write(f"**Usia Anda adalah**: {usia} tahun")
 
 
-# Halaman Cafe
+# Halaman Baru 
 def cafe_page():
     st.title("Halaman baru")
     st.write("Halaman ini masih dalam pengembangan.")

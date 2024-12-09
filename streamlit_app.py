@@ -1,42 +1,65 @@
 import streamlit as st
-import matplotlib.pyplot as plt
-import numpy as np
-import time
+from datetime import datetime
+import requests
+from bs4 import BeautifulSoup
+from groq import Groq
 
-# Fungsi untuk menghitung koordinat bentuk hati
-def corazon(n):
-    x = 16 * np.sin(n)**3
-    y = 13 * np.cos(n) - 5 * np.cos(2*n) - 2 * np.cos(3*n) - np.cos(4*n)
-    return x, y
+# Fungsi untuk menentukan selector
+def class_filter(media_name):
+    if media_name == "kompas":
+        return "hlTitle", "h1"
+    elif media_name == "detik":
+        return "media__title", "h2"
+    elif media_name == "tribun":
+        return "hltitle", "div"
 
-# Judul aplikasi
-st.title("Animasi Hati dengan Musik di Streamlit")
-st.write("Simulasi bentuk hati dengan animasi dan musik yang dimainkan bersamaan.")
 
-# Tombol untuk memulai animasi
-start_animation = st.button("Mulai Animasi dan Musik")
+# Fungsi scraping berita
+def scrape_news(name, url):
+    class_name, element_selector = class_filter(name)
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    headline_element = soup.find(element_selector, class_=class_name)
+    return headline_element.text.strip() if headline_element else "Tidak ditemukan."
 
-# Jika tombol ditekan, mulai proses animasi dan musik
-if start_animation:
-    # Menambahkan musik
-    audio_path = "ssstik.io_1731710601228.mp3"  # Ganti dengan path file musik yang ingin diputar
-    st.audio(audio_path, start_time=0)  # Memutar musik otomatis
 
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.set_aspect('equal')
-    ax.set_facecolor("black")
-    ax.axis("off")  # Sembunyikan grid dan sumbu
+# Halaman Utama
+def main_page():
+    st.title("Aplikasi Berita🎉")
+    st.write("Selamat datang!")
 
-    colors = ["red", "pink", "orange", "yellow", "purple"]  # Warna untuk lapisan
+    st.subheader("Berita Tebaru")
+    kompas = scrape_news("kompas", "https://www.kompas.com/")
+    detik = scrape_news("detik", "https://news.detik.com/")
+    tribun = scrape_news("tribun", "https://www.tribunnews.com/")
 
-    # Animasi berlapis
-    for i in range(1, 16):
-        t = np.linspace(0, 2 * np.pi, 100)  # Titik-titik koordinat
-        x, y = corazon(t)
-        ax.plot(x * i, y * i, color=colors[i % len(colors)], alpha=0.7)
+    st.write(f"**Kompas**: {kompas}")
+    st.write(f"**Detik**: {detik}")
+    st.write(f"**Tribun**: {tribun}")
 
-        # Tampilkan layer saat ini di Streamlit
-        st.pyplot(fig)
-        time.sleep(0.2)  # Jeda sejenak sebelum menambah lapisan
 
-    st.write("Animasi selesai!")
+# Halaman Cek Usia
+def usia_page():
+    st.title("Cek Usia dan Fakta Teknologi")
+    tahun_lahir = st.number_input("Masukkan Tahun Lahir Anda", min_value=1900, max_value=datetime.now().year, step=1)
+
+    if st.button("Cek Usia"):
+        tahun_sekarang = datetime.now().year
+        usia = tahun_sekarang - tahun_lahir
+        st.write(f"**Usia Anda adalah**: {usia} tahun")
+
+
+# Halaman Cafe
+def cafe_page():
+    st.title("Halaman baru")
+    st.write("Halaman ini masih dalam pengembangan.")
+    
+# Menampilkan halaman sesuai menu
+menu = st.sidebar.selectbox("Pilih Halaman", ["Halaman Berita", "Cek Usia", "baru"])
+
+if menu == "Halaman Berita":
+    main_page()
+elif menu == "Cek Usia":
+    usia_page()
+elif menu == "baru":
+    cafe_page()
